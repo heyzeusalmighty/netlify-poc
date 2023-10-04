@@ -1,12 +1,13 @@
 import type { GatsbyConfig } from "gatsby";
 import * as dotenv from "dotenv";
+import NetlifyAdapter from "gatsby-adapter-netlify";
 
 dotenv.config({ path: ".env" });
 
 const CONTENTFUL_CONFIG = {
   spaceId: process.env.CONTENTFUL_SPACE_ID,
   environment: process.env.CONTENTFUL_ENVIRONMENT,
-  accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
+  accessToken: process.env.CONTENTFUL_PREVIEW_TOKEN,
   host: process.env.CONTENTFUL_HOST,
   localeFilter: (locale: { code: string }) =>
     locale.code === process.env.GATSBY_CONTENTFUL_LOCALE,
@@ -34,11 +35,14 @@ const config: GatsbyConfig = {
       resolve: "gatsby-plugin-page-creator",
       options: {
         path: `${__dirname}/src/pages`,
-        ignore: ["!(previews/*)"], // Ignore all files except the preview pages.
+        // ignore: ["!(previews/*)"], // Ignore all files except the preview pages.
         slugify: { separator: "", lowercase: false }, // Remove automatic slugify of ids.
       },
     },
   ],
+  adapter: NetlifyAdapter({
+    excludeDatastoreFromEngineFunction: false,
+  }),
 };
 
 export default config;
